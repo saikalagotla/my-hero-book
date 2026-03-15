@@ -11,6 +11,7 @@ interface StoryPage {
 interface StoryResponse {
   title: string;
   dedication: string;
+  characterDescription: string;
   pages: StoryPage[];
 }
 
@@ -20,6 +21,20 @@ export async function POST(req: NextRequest) {
     const formData: BookFormData = body.formData;
 
     const userPrompt = buildStoryUserPrompt(formData);
+
+    const messageContent = formData.childPhoto
+      ? [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: formData.childPhoto.mediaType,
+              data: formData.childPhoto.data,
+            },
+          },
+          { type: 'text', text: userPrompt },
+        ]
+      : userPrompt;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -32,7 +47,7 @@ export async function POST(req: NextRequest) {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 4000,
         system: STORY_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userPrompt }],
+        messages: [{ role: 'user', content: messageContent }],
       }),
     });
 
@@ -53,7 +68,7 @@ export async function POST(req: NextRequest) {
       parsed = JSON.parse(jsonMatch[0]);
     }
 
-    if (!parsed.title || !parsed.dedication || !Array.isArray(parsed.pages)) {
+    if (!parsed.title || !parsed.dedication || !parsed.characterDescription || !Array.isArray(parsed.pages)) {
       throw new Error('Invalid story structure returned from Claude.');
     }
     if (parsed.pages.length !== 12) {

@@ -4,16 +4,12 @@ import { buildImagePrompt } from '@/lib/prompts';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { imagePrompt, childName, theme } = body as {
+    const { imagePrompt, characterDescription } = body as {
       imagePrompt: string;
-      childName: string;
-      theme: string;
+      characterDescription: string;
     };
 
-    void childName;
-    void theme;
-
-    const fullPrompt = buildImagePrompt(imagePrompt);
+    const fullPrompt = buildImagePrompt(imagePrompt, characterDescription);
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',

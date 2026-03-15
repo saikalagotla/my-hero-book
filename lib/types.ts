@@ -1,10 +1,11 @@
 export interface BookFormData {
   childName: string;
   age: number;
-  pronouns: 'he/him' | 'she/her' | 'they/them';
-  trait: 'brave' | 'curious' | 'kind' | 'funny' | 'creative';
-  theme: 'space' | 'ocean' | 'forest' | 'magic' | 'dinosaurs';
+  pronouns: string[];
+  traits: string[];
+  themes: string[];
   friendName: string;
+  childPhoto?: { data: string; mediaType: string };
 }
 
 export interface BookPage {
@@ -18,4 +19,5 @@ export interface GeneratedBook {
   title: string;
   pages: BookPage[];
   dedication: string;
+  characterDescription: string;
 }

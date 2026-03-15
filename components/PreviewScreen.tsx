@@ -76,8 +76,7 @@ export default function PreviewScreen({ formData, onBookReady }: PreviewScreenPr
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             imagePrompt: page.imagePrompt,
-            childName: formData.childName,
-            theme: formData.theme,
+            characterDescription: storyData.characterDescription,
           }),
         });
         if (!imgRes.ok) {
@@ -105,6 +104,7 @@ export default function PreviewScreen({ formData, onBookReady }: PreviewScreenPr
       const book: GeneratedBook = {
         title: storyData.title,
         dedication: storyData.dedication,
+        characterDescription: storyData.characterDescription,
         pages,
       };
 
